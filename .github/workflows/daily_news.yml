@@ -1,0 +1,28 @@
+name: AI Daily News
+
+on:
+  schedule:
+    # 每天北京时间 8:00 触发（UTC 时间 0:00）
+    - cron: "0 0 * * *"
+  workflow_dispatch:  # 允许手动触发测试
+
+jobs:
+  send-news:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run news bot
+        env:
+          FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+        run: python news_bot.py
