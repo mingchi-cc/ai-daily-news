@@ -11,7 +11,7 @@ def fetch_hn_ai_news():
         # Hacker News 官方 API
         search_url = "https://hn.algolia.com/api/v1/search"
         params = {
-            "query": "AI OR LLM OR GPT OR Claude OR \"machine learning\"",
+            "query": "AI OR LLM OR GPT",
             "tags": "story",
             "numericFilters": "created_at_i>{}".format(
                 int((datetime.now() - timedelta(days=1)).timestamp())
