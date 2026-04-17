@@ -37,7 +37,7 @@ def send_to_feishu(news_list, webhook_url):
     for i, news in enumerate(news_list, 1):
         content += f"{i}. {news['title']} → {news['url']}\n"
 
-    payload = {"msg_type": "text", "content": {"text": "ttttttttttt"}}
+    payload = {"msg_type": "text", "content": {"text": content}}
     response = requests.post(webhook_url, json=payload)
     print("推送结果:", response.status_code, response.text)
 
