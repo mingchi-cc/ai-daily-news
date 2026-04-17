@@ -32,20 +32,29 @@ def fetch_hn_ai_news():
 
 def send_to_feishu(news_list, webhook_url):
     """发送消息到飞书"""
-    content = f"【AI 每日简报】{beijing_time}\n\n"
-    for i, news in enumerate(news_list, 1):
-        content += f"{i}. {news['title']} → {news['url']}\n"
+    def send_to_feishu(news, webhook_url):
+    if not news or all("暂无" in item["title"] for item in news):
+        # 强制保证至少一条消息
+        news = [{"title": "🤖 今日 Hacker News 暂无 AI 相关新闻", "url": "https://news.ycombinator.com"}]
     
-    payload = {"msg_type": "text", "content": {"text": content}}
-    response = requests.post(webhook_url, json=payload)
-    print("推送结果:", response.status_code, response.text)
-
-if __name__ == "__main__":
-    import os
-    webhook = os.getenv("FEISHU_WEBHOOK")
-    if not webhook:
-        print("错误：未设置 FEISHU_WEBHOOK 环境变量")
-        exit(1)
+    elements = []
+    for item in news[:5]:  # 最多5条
+        elements.append({
+            "tag": "div",
+            "text": {
+                "content": f"[{item['title']}]({item['url']})",
+                "tag": "lark_md"
+            }
+        })
     
-    news = fetch_hn_ai_news()
-    send_to_feishu(news, webhook)
+    card = {
+        "msg_type": "interactive",
+        "card": {
+            "config": {"wide_screen_mode": True},
+            "header": {"title": {"content": "🔥 每日AI新闻速递", "tag": "plain_text"}},
+            "elements": elements
+        }
+    }
+    
+    resp = requests.post(webhook_url, json=card)
+    print(f"推送结果: {resp.status_code} {resp.text}")  # 关键！打印响应
