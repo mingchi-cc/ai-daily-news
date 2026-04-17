@@ -33,6 +33,7 @@ def fetch_hn_ai_news():
 def send_to_feishu(news_list, webhook_url):
     """发送消息到飞书"""
     content = f"【AI 每日简报】{beijing_time}\n\n"
+    print(f'newList:{news_list}')
     for i, news in enumerate(news_list, 1):
         content += f"{i}. {news['title']} → {news['url']}\n"
 
